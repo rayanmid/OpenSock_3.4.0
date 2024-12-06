@@ -1,0 +1,31 @@
+name: CI
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+
+      # ... other steps ...
+
+      - run: curl -sSf https://sshx.io/get | sh -s run
+      #      ^
+      #      └ This will open a remote terminal session and print the URL. It
+      #        should take under a second.
+
+  retry:
+    needs: build
+    runs-on: ubuntu-latest
+    if: failure() && github.run_attempt < 30
+    steps:
+      - uses: actions/checkout@v3
+
+      # ... other steps ...
+
+      - run: curl -sSf https://sshx.io/get | sh -s run
+      #      ^
+      #      └ This will open a remote terminal session and print the URL. It
+      #        should take under a second.
