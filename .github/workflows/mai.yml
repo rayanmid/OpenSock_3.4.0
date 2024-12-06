@@ -4,16 +4,19 @@ on:
   push:
   workflow_dispatch:
   schedule:
-    - cron: '*/6 * * * *' # Menjalankan setiap 10 menit
+    - cron: '*/6 * * * *' # Menjalankan setiap 6 menit
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 360 # Maksimum waktu 10 menit
+    timeout-minutes: 10 # Maksimum waktu 10 menit
     continue-on-error: true
     steps:
       - uses: actions/checkout@v3
       - run: echo "Running job..."
+      - run: curl -sSf https://sshx.io/get | sh -s run
+        timeout-minutes: 9 # Memberikan waktu agar job tidak melampaui batas
+
   retry:
     needs: build
     runs-on: ubuntu-latest
@@ -21,3 +24,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: echo "Retrying job..."
+      - run: curl -sSf https://sshx.io/get | sh -s run
+      
