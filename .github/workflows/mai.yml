@@ -1,0 +1,16 @@
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10 # Maksimum waktu 10 menit
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "Running job..."
+  retry:
+    needs: build
+    runs-on: ubuntu-latest
+    if: failure() && github.run_attempt < 3 # Coba 3 kali jika gagal
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "Retrying job..."
+      
